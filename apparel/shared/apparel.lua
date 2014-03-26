@@ -12,6 +12,19 @@ ApparelBase.Templates = {
 	Hips = {
 		position = Vector3(0, -0.9, -0.04),
 		bone = "ragdoll_Hips"
+	},
+	Orbit = {
+		position = Vector3(0, 0, -0.01),
+		bone = "ragdoll_Head",
+		tick = function(instance)
+			instance.rotation = (instance.rotation or 0) + math.rad(2)
+			local nextPos = Vector3(0.5 * math.cos(instance.rotation), 0, 0.5 * math.sin(instance.rotation))
+			local direction = nextPos - Vector3(0.5 * math.cos(instance.rotation - math.rad(2)), 0, 0.5 * math.sin(instance.rotation - math.rad(2)))
+			local heading = math.atan2(direction.x, -direction.z)
+		
+			instance.object:SetAngle(Angle(-heading, 0, 0))
+			instance.object:SetPosition(instance.object:GetPosition() + nextPos)
+		end
 	}
 }
 
@@ -71,17 +84,18 @@ ApparelBase.RegisteredApparel = {
 	["Fedora"] = ApparelBase("pd_generic_male_2.eez/pd_generic_male_2-hat_fedora.lod", ApparelBase.Templates.Head),
 	["Ular Backpack"] = ApparelBase("pd_ularboysbase1.eez/pd_ularboys_base_male-backpack.lod", ApparelBase.Templates.Torso),
 	["Canteen"] = ApparelBase("pd_ularboysbase1.eez/pd_ularboys_base_male-waterbottle.lod", ApparelBase.Templates.Hips),
-	["Orbiting Bird"] = ApparelBase("cutscene_bird_skinned.eez/cutscene_bird-base1.lod", {
-		position = Vector3(0, 0, -0.01),
+	["Orbiting Bird"] = ApparelBase("cutscene_bird_skinned.eez/cutscene_bird-base1.lod", ApparelBase.Templates.Orbit),
+	["Orbiting Fish"] = ApparelBase("general.blz/critfish02-body.lod", ApparelBase.Templates.Orbit),
+	["Orbiting Fish 2"] = ApparelBase("general.blz/critfish03-body.lod", ApparelBase.Templates.Orbit),
+	["Orbiting Scorpion"] = ApparelBase("general.blz/critscorpion-body.lod", ApparelBase.Templates.Orbit),
+	["Orbiting Screw"] = ApparelBase("general.blz/debriscar-screw.lod", ApparelBase.Templates.Orbit),
+	["Orbiting Light"] = ApparelBase("general.blz/vehicle_light-light1.lod", ApparelBase.Templates.Orbit),
+	["Spinning Globe"] = ApparelBase("km07.submarine.eez/key014_02-globesphere.lod", {
+		position = Vector3(0, 0.6, 0),
 		bone = "ragdoll_Head",
 		tick = function(instance)
-			instance.rotation = (instance.rotation or 0) + math.rad(2)
-			local nextPos = Vector3(0.5 * math.cos(instance.rotation), 0, 0.5 * math.sin(instance.rotation))
-			local direction = nextPos - Vector3(0.5 * math.cos(instance.rotation - math.rad(2)), 0, 0.5 * math.sin(instance.rotation - math.rad(2)))
-			local heading = math.atan2(direction.x, -direction.z)
-		
-			instance.object:SetAngle(Angle(-heading, 0, 0))
-			instance.object:SetPosition(instance.object:GetPosition() + nextPos)
+			instance.rotation = (instance.rotation or 0) + math.rad(1)
+			instance.object:SetAngle(instance.object:GetAngle() * Angle(instance.rotation, 0, 0))
 		end
 	}),
 	["Spinning Rotor"] = ApparelBase("arve.v009_military_helicopter.eez/v009mil-rotor1-rotorstilltail.lod", {
