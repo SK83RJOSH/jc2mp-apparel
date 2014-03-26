@@ -83,7 +83,7 @@ function Apparel:EntitySpawn(args)
 end
 
 function Apparel:EntityDespawn(args)
-	if args.entity.__type == "Player" and self.playerApparel[args.EntityDespawn:GetId()] then
+	if args.entity.__type == "Player" and self.playerApparel[args.entity:GetId()] then
 		self:RemoveApparel(args.entity:GetId())
 	end
 end
