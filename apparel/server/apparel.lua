@@ -13,7 +13,7 @@ function Apparel:__init()
 end
 
 function Apparel:LoadApparel(player)
-	if not table.find(io.files("userdata"), player:GetSteamId().id .. ".json") then
+	if not table.find(io.files("userdata/"), player:GetSteamId().id .. ".json") then
 		apparelFile = io.open("userdata/" .. player:GetSteamId().id .. ".json", "w")
 		apparelFile:write(JSON.encode({}))
 		apparelFile:close()
@@ -32,7 +32,7 @@ end
 
 function Apparel:ModuleLoad()
 	if not table.find(io.directories("/"), "userdata") then
-		io.createdir("userdata")
+		io.createdir("userdata/")
 	end
 
 	for player in Server:GetPlayers() do

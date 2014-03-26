@@ -78,7 +78,7 @@ end
 
 function Apparel:EntitySpawn(args)
 	if args.entity.__type == "Player" then
-		Network:Send("ApparelFetch", {player = player:GetId()})
+		Network:Send("ApparelFetch", {player = args.enitity:GetId()})
 	end
 end
 
