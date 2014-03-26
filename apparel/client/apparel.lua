@@ -15,6 +15,16 @@ function Apparel:__init()
 	Network:Subscribe("ApparelLoad", self, self.ApparelLoad)
 end
 
+function Apparel:RemoveApparel(player)
+	if self.playerApparel[player] then
+		for k, v in pairs(self.playerApparel[player]) do
+			v:Remove()
+		end
+
+		self.playerApparel[player] = nil
+	end
+end
+
 function Apparel:FetchRegisteredApparel(args)
 	local registered = {}
 	for k, v in pairs(ApparelBase.RegisteredApparel) do table.insert(registered, k) end
@@ -52,9 +62,7 @@ end
 
 function Apparel:ModuleUnload()
 	for k, v in pairs(self.playerApparel) do
-		for k, v in pairs(v) do
-			v:Remove()
-		end
+		self:RemoveApparel(k)
 	end
 end
 
@@ -72,20 +80,12 @@ end
 
 function Apparel:EntityDespawn(args)
 	if args.entity.__type == "Player" and self.playerApparel[args.EntityDespawn:GetId()] then
-		for k, v in pairs(self.playerApparel[args.EntityDespawn:GetId()]) do
-			v:Remove()
-		end
-
-		self.playerApparel[args.EntityDespawn:GetId()] = nil
+		self:RemoveApparel(args.entity:GetId())
 	end
 end
 
 function Apparel:ApparelLoad(args)
-	if self.playerApparel[args.player] then
-		for k, v in pairs(self.playerApparel[args.player]) do
-			v:Remove()
-		end
-	end
+	self:RemoveApparel(args.player)
 	
 	if args.player == LocalPlayer:GetId() then
 		self.apparel = args.apparel
