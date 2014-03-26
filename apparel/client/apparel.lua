@@ -58,6 +58,10 @@ end
 
 function Apparel:ModuleLoad()
 	Network:Send("ApparelFetch", {player = LocalPlayer:GetId()})
+
+	for player in Client:GetStreamedPlayers() do
+		Network:Send("ApparelFetch", {player = player:GetId()})
+	end
 end
 
 function Apparel:ModuleUnload()
@@ -93,8 +97,10 @@ function Apparel:ApparelLoad(args)
 	end
 	
 	self.playerApparel[args.player] = {}
-	for k, v in pairs(args.apparel) do	
-		table.insert(self.playerApparel[args.player], ApparelBase.RegisteredApparel[v]:CreateInstance(Player.GetById(args.player)))
+	for k, v in pairs(args.apparel) do
+		if ApparelBase.RegisteredApparel[v] then -- Apparel must be valid
+			table.insert(self.playerApparel[args.player], ApparelBase.RegisteredApparel[v]:CreateInstance(Player.GetById(args.player)))
+		end
 	end
 end
 
