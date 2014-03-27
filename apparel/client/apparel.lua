@@ -7,12 +7,21 @@ function Apparel:__init()
 	Events:Subscribe("FetchRegisteredApparel", self, self.FetchRegisteredApparel)
 	Events:Subscribe("FetchPlayerApparel", self, self.FetchPlayerApparel)
 	Events:Subscribe("SetApparel", self, self.SetApparel)
+	Events:Subscribe("ModulesLoad", self, self.HelpAddItem)
 	Events:Subscribe("ModuleLoad", self, self.ModuleLoad)
 	Events:Subscribe("ModuleUnload", self, self.ModuleUnload)
 	Events:Subscribe("Render", self, self.Render)
 	Events:Subscribe("EntitySpawn", self, self.EntitySpawn)
 	Events:Subscribe("EntityDespawn", self, self.EntityDespawn)
 	Network:Subscribe("ApparelLoad", self, self.ApparelLoad)
+end
+
+function Apparel:HelpAddItem()
+	Events:Fire("HelpAddItem", {
+		name = "Apparel",
+		text = "This server uses Apparel by SK83RJOSH.\n" ..
+			   "Check it out on GitHub! (http://github.com/SK83RJOSH/Apparel/)"
+	})
 end
 
 function Apparel:RemoveApparel(player)
@@ -62,12 +71,18 @@ function Apparel:ModuleLoad()
 	for player in Client:GetStreamedPlayers() do
 		Network:Send("ApparelFetch", {player = player:GetId()})
 	end
+
+	self:HelpAddItem()
 end
 
 function Apparel:ModuleUnload()
 	for k, v in pairs(self.playerApparel) do
 		self:RemoveApparel(k)
 	end
+	
+	Events:Fire("HelpRemoveItem", {
+		name = "Apparel"
+	})
 end
 
 function Apparel:Render()
