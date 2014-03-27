@@ -25,6 +25,30 @@ ApparelBase.Templates = {
 			instance.object:SetAngle(Angle(-heading, 0, 0))
 			instance.object:SetPosition(instance.object:GetPosition() + nextPos)
 		end
+	},
+	Flaming = {
+		position = Vector3(0, -1.64, -0.04),
+		bone = "ragdoll_Head",
+		tick = function(instance)
+			if not instance.effect then
+				instance.effect = ClientEffect.Create(AssetLocation.Game, {
+					effect_id = 326,
+					position = instance.object:GetPosition() - (instance.object:GetAngle() * Vector3(0, -1.64, -0.04)) - Vector3(0, 0, -0.05),
+					angle = Angle()
+				})
+			else
+				if not instance.effect:IsPlaying() then
+					instance.effect:Play()
+				end
+
+				instance.effect:SetPosition(instance.object:GetPosition() - (instance.object:GetAngle() * Vector3(0, -1.64, -0.04)))
+			end
+		end,
+		removal = function(instance)
+			if instance.effect then
+				instance.effect:Remove()
+			end
+		end
 	}
 }
 
@@ -90,6 +114,7 @@ ApparelBase.RegisteredApparel = {
 	["Orbiting Scorpion"] = ApparelBase("general.blz/critscorpion-body.lod", ApparelBase.Templates.Orbit),
 	["Orbiting Screw"] = ApparelBase("general.blz/debriscar-screw.lod", ApparelBase.Templates.Orbit),
 	["Orbiting Light"] = ApparelBase("general.blz/vehicle_light-light1.lod", ApparelBase.Templates.Orbit),
+	["Unusual Ushanka"] = ApparelBase("pd_arcticvillage_male1.eez/pd_arcticvillage_male-hat.lod", ApparelBase.Templates.Flaming),
 	["Spinning Globe"] = ApparelBase("km07.submarine.eez/key014_02-globesphere.lod", {
 		position = Vector3(0, 0.6, 0),
 		bone = "ragdoll_Head",
@@ -104,6 +129,14 @@ ApparelBase.RegisteredApparel = {
 		tick = function(instance)
 			instance.rotation = (instance.rotation or 0) + math.rad(10)
 			instance.object:SetAngle(instance.object:GetAngle() * Angle(0, instance.rotation, math.rad(90)))
+		end
+	}),
+	["Platinum Bolt"] = ApparelBase("general.blz/debriscar-screw.lod", {
+		position = Vector3(0, 0.3, 0),
+		bone = "ragdoll_Head",
+		tick = function(instance)
+			instance.rotation = (instance.rotation or 0) + math.rad(1)
+			instance.object:SetAngle(instance.object:GetAngle() * Angle(0, instance.rotation, -instance.rotation))
 		end
 	})
 }
@@ -132,4 +165,8 @@ end
 
 function ApparelInstance:Remove()
 	self.object:Remove()
+
+	if self.template.removal then
+		self.template.removal(self)
+	end
 end
